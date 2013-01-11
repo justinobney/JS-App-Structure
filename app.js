@@ -2,33 +2,28 @@
  *  Project: Javascript Application Architecture
  *  Author: Justin Obney - http://resume.justinobney.com
  *  Description: This is my base architecture using practices that work FOR ME
- *             : This is using the Revealing Prototype Pattern. 
+ *             : This is using the Revealing Prototype Pattern.
  *             : Key Factors:
  *                 - Variables defined in constructor
  *                 - Methods defined via Revealing Module Pattern on object's prototype
  *  License: Creative Commons? IDK.. I dont care..
  */
  
-// the semi-colon before function invocation is a safety net against concatenated
-// scripts and/or other plugins which may not be closed properly.
 var StandardApp = function () {
     this.appName = "StandardApp";
 
-    // Private variables for INTERNAL use only
     this.vars = {
-        /*propertyName: "value"*/
         isInitialized: false
     };
 
     // Configuration that we will provide access to
     this.config = {
-        /*propertyName: "value"*/
         preventReInit: true,
         eventNamespace: this.appName
     };
 };
 
-StandardApp.prototype = function(_, pubsub, window, document, undefined){
+StandardApp.prototype = function(_, pubsub){
 
     // Name Public functions (that will be exposed) with Captialize Words and NO UNDERSCORE
     var Init = function(settings){
@@ -54,13 +49,6 @@ StandardApp.prototype = function(_, pubsub, window, document, undefined){
         return this.config;
     };
 
-    // Used for testing.. Initializing multiple apps for testing was 
-    // causing issues.. Look into Revealing Prototype Pattern
-    // Refactored out with Revealing Prototype Pattern..
-    /*var Reset = function(){
-        this.vars.isInitialized = false;
-    };*/
-
     // Denote private functions with an underscore and Captialize Words
     var _PrivateHelper = function(){
         console.log("Called inside _PrivateHelper..");
@@ -70,24 +58,20 @@ StandardApp.prototype = function(_, pubsub, window, document, undefined){
     // Use internal Pub/Sub to be able to swap out implimentation
     // ---------------------------------------------------------
     var _BindListeners = function(){
-        // _Subscribe('myHandler', function() {
-        //     alert('My handeler was invoked:');
+        // _Subscribe('someOutsideEvent', function() {
+        //     do something internally..
         // });
     };
 
     var _Subscribe = function(eventName, handler){
-
         pubsub.subscribe(eventName, handler);
-
     };
 
     var _Publish = function(eventName, data, optionalNamespace){
-
         var namespace = (optionalNamespace || this.config.eventNamespace);
         var qualifiedEventName = namespace + '/' + eventName;
 
         pubsub.publish(qualifiedEventName, data);
-
     };
     // =========== END Observable Implimentation ================
 
@@ -95,4 +79,4 @@ StandardApp.prototype = function(_, pubsub, window, document, undefined){
         init: Init
     };
 
-}( _, pubsub, window, document); // Pass in dependancies
+}( _, pubsub); // Pass in dependancies
