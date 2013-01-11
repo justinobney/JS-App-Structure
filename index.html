@@ -1,0 +1,183 @@
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Sticky footer &middot; Twitter Bootstrap</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <!-- CSS -->
+    <link href="css/bootstrap.css" rel="stylesheet">
+    <link rel="stylesheet" href="http://code.jquery.com/qunit/qunit-1.10.0.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+    <style type="text/css">
+
+        /* Sticky footer styles
+        -------------------------------------------------- */
+
+        html,
+        body {
+        height: 100%;
+        /* The html and body elements cannot have any padding or margin. */
+        }
+
+        /* Wrapper for page content to push down footer */
+        #wrap {
+        min-height: 100%;
+        height: auto !important;
+        height: 100%;
+        /* Negative indent footer by it's height */
+        margin: 0 auto -60px;
+        }
+
+        /* Set the fixed height of the footer here */
+        #push,
+        #footer {
+        height: 60px;
+        }
+        #footer {
+        background-color: #f5f5f5;
+        }
+
+        /* Lastly, apply responsive CSS fixes as necessary */
+        @media (max-width: 767px) {
+        #footer {
+          margin-left: -20px;
+          margin-right: -20px;
+          padding-left: 20px;
+          padding-right: 20px;
+        }
+        }
+
+
+
+        /* Custom page CSS
+        -------------------------------------------------- */
+        /* Not required for template or sticky footer method. */
+
+        .container .credit {
+        margin: 20px 0;
+        }
+
+
+        #qunit-fixture {
+            position: relative;
+            top: 0;
+            left: 0;
+            width: auto;
+            height: auto;
+        }
+    </style>
+
+    <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+
+  </head>
+  <body>
+    <!-- Part 1: Wrap all page content here -->
+    <div id="wrap">
+        <!-- Begin page content -->
+        <div class="container">
+            <h1 id="qunit-header">Happy Tests</h1>
+            <h2 id="qunit-banner"></h2>
+            <h2 id="qunit-userAgent"></h2>
+            <ol id="qunit-tests"></ol>
+            <div id="qunit-fixture"></div>
+        </div>
+
+        <div id="push"></div>
+    </div>
+
+    <div id="footer">
+      <div class="container">
+        <p class="muted credit">Via Justin Obney</p>
+      </div>
+    </div>
+
+    <!-- Le javascript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="js/plugins.js"></script>
+    <script src="js/minpubsub.js"></script>
+    <script src="http://documentcloud.github.com/underscore/underscore-min.js"></script>
+    <script type="text/javascript" src="app.js"></script>
+    <script type="text/javascript" src="http://code.jquery.com/qunit/qunit-1.10.0.js"></script>
+    
+    <script type="text/javascript">
+        var $fixture = $( "#qunit-fixture" );
+        var content = $fixture.html();
+        var app = null;
+
+
+        function showShell(jqEl){
+            var newEl = jqEl.empty().clone();
+            var wrap = $('<div />').append(newEl);
+            return wrap.html();
+        }
+
+        function runTests(){
+            module( "General Tests", {
+                setup: function() {
+                    app = new StandardApp();
+                }, teardown: function() {
+                    app = null;
+                }
+            });
+
+            test( "Init returns config options", function() {
+                var settings = app.init();
+                ok( _.isObject( settings ), 'Init returned an "object" ::: ' + JSON.stringify( settings ) );
+            });
+
+            // **** NOTE **** 
+            // When using subscriptions, remember to unsubscribe in the same test.
+            test( "Init publishes an init event", function() {
+                expect(2);
+                var eventName = app.config.eventNamespace + "/" + "init";
+                var token = pubsub.subscribe(eventName, function(config){
+                    ok( true, "Event was triggered: " );
+                    ok( _.isObject( config ), 'Init event contained "object" ::: ' + JSON.stringify( config ) );
+                    pubsub.unsubscribe(token);
+                    start();
+                });
+
+                app.init();
+                setTimeout(start, 1000);
+            });
+
+            test( "Multiple Init throws exception by default", function() {
+                try {
+                    app.init();
+                    app.init();
+                    ok( false, "Multiple init DID NOT throw an exception" );
+                }
+                catch (exception) {
+                    ok( true, "Multiple init threw an exception" );
+                }
+            });
+
+            test( "Multiple Init can be over-riden", function() {
+                try {
+                    var settings = {
+                        preventReInit: false
+                    };
+
+                    app.init(settings);
+                    app.init();
+                    ok( true, "Multiple init DID NOT throw an exception" );
+                }
+                catch (exception) {
+                    ok( false, "Multiple init threw an exception" );
+                }
+            });
+
+        }
+
+        $(function(){
+            runTests();
+        });
+    </script>
+  </body>
+</html>
