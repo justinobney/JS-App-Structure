@@ -3,7 +3,7 @@
     <meta charset="utf-8">
     <title>JS Application Structure</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Justin Obney">
+    <meta name="description" content="">
     <meta name="author" content="">
 
     <!-- CSS -->
@@ -99,7 +99,7 @@
     ================================================== -->
     <!-- Placed at the end of the document so the pages load faster -->
     <script src="js/plugins.js"></script>
-    <!-- <script src="js/minpubsub.js"></script> -->
+    <script src="js/minpubsub.js"></script>
     <script src="http://documentcloud.github.com/underscore/underscore-min.js"></script>
     <script type="text/javascript" src="app.js"></script>
     <script type="text/javascript" src="http://code.jquery.com/qunit/qunit-1.10.0.js"></script>
@@ -110,21 +110,16 @@
         var app = null;
 
 
-        function showShell( jqEl ) {
+        function showShell(jqEl){
             var newEl = jqEl.empty().clone();
             var wrap = $('<div />').append(newEl);
             return wrap.html();
         }
 
-        function MakeApp() {
-            var newApp = StandardApp( jQuery, window, document ); // Pass in dependancies();
-            return newApp;
-        }
-
         function runTests(){
             module( "General Tests", {
                 setup: function() {
-                    app = MakeApp();
+                    app = new StandardApp();
                 }, teardown: function() {
                     app = null;
                 }
@@ -139,11 +134,11 @@
             // When using subscriptions, remember to unsubscribe in the same test.
             test( "Init publishes an init event", function() {
                 expect(2);
-                var eventName = app.settings.eventNamespace + "/" + "init";
-                var token = $.subscribe(eventName, function(event, config){
+                var eventName = app.config.eventNamespace + "/" + "init";
+                var token = pubsub.subscribe(eventName, function(config){
                     ok( true, "Event was triggered: " );
                     ok( _.isObject( config ), 'Init event contained "object" ::: ' + JSON.stringify( config ) );
-                    $.unsubscribe(eventName);
+                    pubsub.unsubscribe(token);
                     start();
                 });
 

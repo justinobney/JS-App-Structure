@@ -1,32 +1,35 @@
 /*
  *  Project: Javascript Application Architecture
- *  Description: This is my base architecture using practices that work FOR ME
  *  Author: Justin Obney - http://resume.justinobney.com
+ *  Description: This is my base architecture using practices that work FOR ME
+ *             : This is using the Revealing Prototype Pattern.
+ *             : Key Factors:
+ *                 - Variables defined in constructor
+ *                 - Methods defined via Revealing Module Pattern on object's prototype
  *  License: Creative Commons? IDK.. I dont care..
  */
  
-// the semi-colon before function invocation is a safety net against concatenated
-// scripts and/or other plugins which may not be closed properly.
-; var ApplicationName = (function ($, window, document, undefined) {
-    var appName = "ApplicationName";
+var StandardApp = function () {
+    this.appName = "StandardApp";
 
-    // Private variables for INTERNAL use only
-    var vars = {
-        /*propertyName: "value"*/
+    this.vars = {
         isInitialized: false
     };
 
     // Configuration that we will provide access to
-    var config = {
-        /*propertyName: "value"*/
+    this.config = {
         preventReInit: true,
-        eventNamespace: appName
+        eventNamespace: this.appName
     };
 
-    // Name Public functions (that will be exposed) with Captialize Words and NO UNDERSCORE
-    function Init(settings){
+};
 
-        if ( config.preventReInit && vars.isInitialized ){
+StandardApp.prototype = function(_, pubsub){
+
+    // Name Public functions (that will be exposed) with Captialize Words and NO UNDERSCORE
+    var Init = function(settings){
+        
+        if ( this.config.preventReInit && this.vars.isInitialized ){
             // alert("Init called after app is initialized.");
             throw {
                 name: "Multiple init exception",
@@ -34,58 +37,51 @@
             };
         }
 
-        vars.isInitialized = true;
+        this.vars.isInitialized = true;
 
-        config = $.extend({}, config, settings);
+        this.config = _.extend(this.config, settings);
+        
+        // Use Function.call when the method needs to set the "this" object to the current instance.
+        _Publish.call(this,'init', [this.config]);
 
-        _Publish('init', config);
-
-        return config;
-    }
-
-    // Used for testing.. Initializing multiple apps for testing was
-    // causing issues.. Look into Revealing Prototype Pattern
-    function Reset(){
-        vars.isInitialized = false;
-    }
+        // This function doesn't use "this" (referring to the current instance), thus can be call normally
+        // Is there a huge case for this, or should I use Function.call most of the time?
+        _PrivateHelper.call(this);
+        return this.config;
+    };
 
     // Denote private functions with an underscore and Captialize Words
-    function _PrivateHelper(){
-
-    }
+    var _PrivateHelper = function(){
+        // Do some internal work
+        // _Publish.call(this, "_PrivateHelperCalled", [true]);
+    };
 
     // =========== Observable Implimentation ===================
     // Use internal Pub/Sub to be able to swap out implimentation
     // ---------------------------------------------------------
-    function _BindListeners(){
-        // _Subscribe('myHandler', function() {
-        //     alert('My handeler was invoked:');
+    var _BindListeners = function(){
+        // _Subscribe( "OtherApp/LoadComplete", function(){
+        //     console.log(this);
         // });
-    }
+    };
 
-    function _Subscribe(eventName, handler){
+    var _Subscribe = function(eventName, handler){
+        pubsub.subscribe(eventName, handler);
+    };
 
-        $.subscribe = $.subscribe || $.noop;
+    var _Publish = function(eventName, data, optionalNamespace){
+        var namespace = (optionalNamespace || this.config.eventNamespace);
+        var qualifiedEventName = namespace + '/' + eventName;
 
-        $.subscribe(eventName, handler);
+        pubsub.publish(qualifiedEventName, data);
+    };
 
-    }
+    // _BindListeners();
 
-    function _Publish(eventName, data, optionalNamespace){
-
-        $.publish = $.publish || $.noop;
-
-        var namespace = (optionalNamespace || config.eventNamespace);
-        var qualifiedEventName = config.eventNamespace + '/' + eventName;
-
-        $.publish(qualifiedEventName, data);
-
-    }
     // =========== END Observable Implimentation ================
 
     return {
-        init: Init,
-        settings: config,
-        reset: Reset
+        init: Init
     };
-})(jQuery, window, document); // Pass in dependancies
+
+}( _, pubsub); // Pass in dependancies
