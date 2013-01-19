@@ -1,0 +1,298 @@
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<title>Envoc &middot; Common Javascript Template</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<meta name="description" content="">
+		<meta name="author" content="">
+
+		<!-- CSS -->
+		<link href="css/bootstrap.css" rel="stylesheet">
+		<link rel="stylesheet" href="http://code.jquery.com/qunit/qunit-1.10.0.css">
+		<!-- <link rel="stylesheet" href="https://raw.github.com/jquery/qunit/master/addons/themes/gabe.css"> -->
+		<script src="js/es5-polyfills.js"></script>
+
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>		
+		<script type="text/javascript" src="http://code.jquery.com/qunit/qunit-1.10.0.js"></script>
+		<style type="text/css">
+
+			/* Sticky footer styles
+			-------------------------------------------------- */
+
+			html,
+			body {
+			height: 100%;
+			/* The html and body elements cannot have any padding or margin. */
+			}
+
+			/* Wrapper for page content to push down footer */
+			#wrap {
+			min-height: 100%;
+			height: auto !important;
+			height: 100%;
+			/* Negative indent footer by it's height */
+			margin: 0 auto -60px;
+			}
+
+			/* Set the fixed height of the footer here */
+			#push,
+			#footer {
+			height: 60px;
+			}
+			#footer {
+			background-color: #f5f5f5;
+			}
+
+			/* Lastly, apply responsive CSS fixes as necessary */
+			@media (max-width: 767px) {
+			#footer {
+			  margin-left: -20px;
+			  margin-right: -20px;
+			  padding-left: 20px;
+			  padding-right: 20px;
+			}
+			}
+
+
+
+			/* Custom page CSS
+			-------------------------------------------------- */
+			/* Not required for template or sticky footer method. */
+
+			.container .credit {
+			margin: 20px 0;
+			}
+
+
+			#qunit-fixture {
+				position: relative;
+				top: 0;
+				left: 0;
+				width: auto;
+				height: auto;
+			}
+		</style>
+
+		<!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
+		<!--[if lt IE 9]>
+		  <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+		<![endif]-->
+
+	</head>
+	<body>
+		<!-- Part 1: Wrap all page content here -->
+		<div id="wrap">
+			<!-- Begin page content -->
+			<div class="container">
+				<h1 id="qunit-header">Happy Tests</h1>
+				<h2 id="qunit-banner"></h2>
+				<h2 id="qunit-userAgent"></h2>
+
+				<div id="qunit-fixture">
+					<div class="btn-toolbar">
+					  <div class="btn-group">
+					      <button class="btn" data-js="tooltip" title="Bold - Ctrl+B"><i class="icon-bold"></i></button>
+					      <button class="btn" data-js="tooltip" title="Italic - Ctrl+I"><i class="icon-italic"></i></button>
+					      <button class="btn" data-js="tooltip" title="List"><i class="icon-list"></i></button>
+					      <button class="btn" data-js="tooltip" title="Img"><i class="icon-picture"></i></button>
+					      <button class="btn" data-js="tooltip" title="URL"><i class="icon-arrow-right"></i></button>
+					  </div>
+					  <div class="btn-group">
+					      <button class="btn" data-js="tooltip" title="Align Right"><i class="icon-align-right"></i></button>
+					      <button class="btn" data-js="tooltip" title="Align Center"><i class="icon-align-center"></i></button>
+					      <button class="btn" data-js="tooltip" title="Align Left"><i class="icon-align-left"></i></button>
+					  </div>
+					  <div class="btn-group">
+					      <button class="btn" data-js="tooltip" title="Preview"><i class="icon-eye-open"></i></button>
+					      <button class="btn" data-js="tooltip" title="Save"><i class="icon-ok"></i></button>
+					      <button class="btn" data-js="tooltip" title="Cancel"><i class="icon-trash"></i></button>
+					  </div>
+					</div>
+
+					<div class="row">
+						<form class="well span8">
+						  <div class="row">
+								<div class="span3">
+									<label>Autocomplete</label>
+									<input type="text" class="span3" placeholder="Data Attribute Autocomplete" data-provide="typeahead" data-autocomplete-source="/ajax/autocomplete" data-autocomplete-related-id="hidTypeAheadVal">
+									<input type="hidden" name="hidTypeAheadVal" id="hidTypeAheadVal">
+									<label>Bad Autocomplete Source</label>
+									<input type="text" class="span3" placeholder="This won't work..." data-provide="typeahead" data-autocomplete-source="#rawr" data-autocomplete-related-id="hidTypeAheadVal">
+									<label>Email Address</label>
+									<input type="text" class="span3" placeholder="Your email address">
+									<label>Subject
+									<select id="subject" name="subject" class="span3">
+										<option value="na" selected="">Choose One:</option>
+										<option value="service">General Customer Service</option>
+										<option value="suggestions">Suggestions</option>
+										<option value="product">Product Support</option>
+									</select>
+									</label>
+								</div>
+								<div class="span5">
+									<label>Message</label>
+									<textarea name="message" id="message" class="input-xlarge span5" rows="10"></textarea>
+								</div>
+							
+								<button type="submit" class="btn btn-primary pull-right">Send</button>
+							</div>
+						</form>					
+					</div>
+				</div>
+
+				<ol id="qunit-tests"></ol>
+			</div>
+
+			<div id="push"></div>
+		</div>
+
+		<div id="footer">
+		  <div class="container">
+			<p class="muted credit">Via Justin Obney</p>
+		  </div>
+		</div>
+
+		<!-- =============== Le dependencies ================== -->
+		<!-- ========== Remove and see what happens! =========== -->
+		<script src="js/plugins.js"></script>
+		<script src="js/bootstrap.js"></script>
+		<script src="js/jquery.dataTables.min.js"></script>
+		<!-- ================================================== -->
+
+		
+
+
+		<!-- =================================================== -->
+		<!--                    Testing Helpers                  -->
+		<!-- =================================================== -->		
+		<script src="js/jquery.mockjax.js"></script>
+		<!-- =================================================== -->
+
+
+
+
+		<!-- =================================================== -->
+		<!--             App Code | System Under Test            -->
+		<!-- =================================================== -->
+		<script type="text/javascript" src="app.common.js"></script>
+		<!-- =================================================== -->
+		
+		<script type="text/javascript">
+			var qfixture = $( "#qunit-fixture" );
+			var content = qfixture.html();
+
+			function setupMockJax(){
+			$.mockjax({
+			  // matches /author/1234/isbn/1234-5678-9012-0
+			  url: '/ajax/autocomplete*',
+			  dataType: 'json',
+			  response: function (settings) {
+			    var term = settings.url.split('?term=')[1];
+			    var resp = [];
+			    
+			    for (var i = 5; i >= 0; i--) {
+			    	resp.push(term + ' word: ' + i);
+				};
+
+				this.responseText = resp;
+			  }
+			});
+			}
+
+
+			function showShell(jqEl){
+				var newEl = jqEl.empty().clone();
+				var wrap = $('<div />').append(newEl);
+				return wrap.html();
+			}
+
+			QUnit.done( function(){
+				warmup.common.init();
+			});
+
+			function runTests(){
+
+				var tooltipSelector = '[data-js="tooltip"]';
+				var typeaheadSelector = '[data-autocomplete-source]';
+
+				module( "General Tests", {
+					setup: function() {
+						// nothing to see yet
+					}, 
+					teardown: function() {
+						// nothing to see yet
+					}
+				});
+
+				test( "Init function does not explode..", function() {
+					warmup.common.init();
+					ok( true, "Nothing exploded.. This is good" );
+				});
+
+				asyncTest( 'Init finds tooltip elements and initializes', 2, function() {
+				  var tooltipMatchCount = $(tooltipSelector).length;
+				  var hasTooltipElements = tooltipMatchCount > 0;
+				  ok( hasTooltipElements, "Elements found with correct selector" );
+
+				  warmup.common.init();
+				  setTimeout(function(){
+				  	var initializedTooltipSelector = '[data-original-title]';
+				  	var initializedTooltipSelectorCount = $(initializedTooltipSelector).length;
+				  	equal( initializedTooltipSelectorCount, tooltipMatchCount, 'Bootstrap tooltip initialized properly' );
+				  	start();
+				  }, 500);
+				});
+
+				test( 'Bootstrap autocomplete initializes correct', 2, function() {
+					ok( $(typeaheadSelector).length > 0 , 'The is a typeahead to test!' );
+
+					warmup.common.init();
+
+				  	ok( $(typeaheadSelector).eq(0).typeahead, 'The first typeahead has the correct data element verifying that it initialized' );
+				});
+
+				test( 'Bootstrap autocomplete throws error when missing required attributes', function() {
+				  try {
+
+				  	// Insert bad html
+				  	// <input type="text" data-provide="typeahead" data-autocomplete-source="#rawr" data-autocomplete-related-id="hidTypeAheadVal">
+				  	var badAutocomplete = $( '<input />', {
+				  		'type': 'text',
+				  		'data-provide': "typeahead",
+				  		'data-autocomplete-source': "#rawr"
+				  	});
+
+				  	qfixture.append( badAutocomplete );
+
+				  	// init the autocomplete
+				  	warmup.common.initAutocomplete( badAutocomplete );
+				  	ok( false, 'Failed to throw exception' );
+				  } 
+				  catch (e) {
+				  	ok( true, 'warmup.common.initAutocomplete threw exception for incorrect data attribute structure' );
+				  }
+				});
+
+				test( 'Bootstrap autocomplete bad response throws error', function() {
+				  try {
+				  	// init the autocomplete
+				  	warmup.common.initAutocomplete();
+
+				  	ok( false, 'Failed to throw exception' );
+				  } 
+				  catch (e) {
+				  	ok( true, 'Threw expected error' );
+				  }
+				});
+
+				// ajax/newContentLoaded fires..
+
+			}
+
+			$(function(){
+				setupMockJax();
+				runTests();
+			});
+		</script>
+	</body>
+</html>
