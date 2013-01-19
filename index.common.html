@@ -84,6 +84,9 @@
 								  <button class="btn" data-js="tooltip" title="Cancel"><i class="icon-trash"></i></button>
 								</div>
 							</div>
+							<br>
+							<h4>Loading Via AJAX</h4>
+							<div class="ajax-holder"></div>
 						</div>
 					</div>
 				</div>
@@ -145,6 +148,14 @@
 					this.responseText = resp;
 				  }
 				});
+
+				$.mockjax({
+				  url: '/ajax/echo',
+				  dataType: 'json',
+				  response: function (settings) {
+					this.responseText = this.responseText = settings.data.text;
+				  }
+				});
 			}
 
 
@@ -155,11 +166,17 @@
 			}
 
 			QUnit.testDone( function(){
-				$('#qunit-tests .pass ol:hidden').fadeIn();
+				// $('#qunit-tests .pass ol:hidden').fadeIn();
 			});
 
 			QUnit.done( function(){
 				warmup.common.init();
+
+				var tooltipHtml = $( '#test-tooltips', content ).find( '.btn-toolbar:first' ).html();
+
+				$.post('/ajax/echo', { text: tooltipHtml }, function(response){
+					qfixture.find('#test-tooltips .ajax-holder').append( response );
+				});
 			});
 
 			function runTests(){
@@ -250,16 +267,19 @@
 				  	warmup.common.init();
 
 					var tooltipHtml = $( '#test-tooltips', content ).find( '.btn-toolbar:first' ).html();
-					qfixture.find('#test-tooltips').append( tooltipHtml );
-					$.publish( 'ajax/newContentLoaded' );
-				  
-					setTimeout( function(){
-						var initializedTooltipSelector = '[data-original-title]';
-						var initializedTooltipSelectorCount = $(initializedTooltipSelector).length;
-						var diff = (initializedTooltipSelectorCount - tooltipMatchCount)
-						ok( initializedTooltipSelectorCount > tooltipMatchCount, 'Late tooltip binding applied ==> ' + diff + ' more initialized' );
-						start();
-					}, 1000 );
+
+					$.post('/ajax/echo', { text: tooltipHtml }, function(response){
+						qfixture.find('#test-tooltips .ajax-holder').append( response );
+
+						// Give the test a few milliseconds to bind the tooltips
+						setTimeout( function(){
+							var initializedTooltipSelector = '[data-original-title]';
+							var initializedTooltipSelectorCount = $(initializedTooltipSelector).length;
+							var diff = (initializedTooltipSelectorCount - tooltipMatchCount)
+							ok( initializedTooltipSelectorCount > tooltipMatchCount, 'Late tooltip binding applied ==> ' + diff + ' more initialized' );
+							start();
+						}, 300 );
+					});
 				});
 
 				// test('description', 1, function() {
