@@ -7,8 +7,6 @@ var warmup = {};
 	// QUESTION: Should this go into the app.common itself or in a test.js file?
 	function checkDependencies(suppressAlert){
 
-
-
 		var dependencyMap = [
 			{ key: 'datatables', name: 'jQuery Datatables plugin', testObject: $.fn.dataTable },
 			{ key: 'mapevents', name: 'jQuery Map Events plugin', testObject: $.mapEvents },

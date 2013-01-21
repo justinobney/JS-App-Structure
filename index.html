@@ -116,15 +116,10 @@
             return wrap.html();
         }
 
-        function MakeApp() {
-            var newApp = StandardApp( jQuery, window, document ); // Pass in dependancies();
-            return newApp;
-        }
-
         function runTests(){
             module( "General Tests", {
                 setup: function() {
-                    app = MakeApp();
+                    app = StandardApp.create();
                 }, teardown: function() {
                     app = null;
                 }

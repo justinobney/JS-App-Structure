@@ -5,6 +5,7 @@
  *  License: Creative Commons? IDK.. I dont care..
  */
  
+ // MODULE STRUCTURE
 var StandardApp = function ( $, window, document, undefined ) {
     var appName = "StandardApp";
 
@@ -44,6 +45,7 @@ var StandardApp = function ( $, window, document, undefined ) {
     // Denote private functions with an underscore and Captialize Words
     function _PrivateHelper(){
 
+        // This has access to all functions and variables defined in the app.
     }
 
     // =========== Observable Implimentation ===================
@@ -60,7 +62,6 @@ var StandardApp = function ( $, window, document, undefined ) {
         $.subscribe = $.subscribe || $.noop;
 
         $.subscribe( eventName, handler );
-
     }
 
     function _Publish( eventName, data, optionalNamespace ){
@@ -71,7 +72,6 @@ var StandardApp = function ( $, window, document, undefined ) {
         var qualifiedEventName = config.eventNamespace + '/' + eventName;
 
         $.publish( qualifiedEventName, data );
-
     }
     // =========== END Observable Implimentation ================
 
@@ -80,3 +80,8 @@ var StandardApp = function ( $, window, document, undefined ) {
         settings: config
     };
 }
+
+StandardApp.create = function(){
+    var newApp = StandardApp( jQuery, window, document ); // Pass in dependancies();
+    return newApp;
+};
