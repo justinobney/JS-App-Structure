@@ -5,37 +5,51 @@ var warmup = {};
 	var fileName = "warmup.common.js";
 
 	// QUESTION: Should this go into the app.common itself or in a test.js file?
-	function checkDependencies(){
+	function checkDependencies(suppressAlert){
+
+
 
 		var dependencyMap = [
-			{ name: 'jQuery Datatables plugin', testObject: $.fn.dataTable },
-			{ name: 'jQuery Map Events plugin', testObject: $.mapEvents },
-			{ name: 'jQuery Pub/Sub plugin', testObject: $.publish },
-			{ name: 'jQuery Bootstrap plugin', testObject: $.fn.modal },
-			{ name: 'Array forEach polyfill', testObject: Array.prototype.forEach },
-			{ name: 'Array.isArray polyfill', testObject: Array.isArray }
+			{ key: 'datatables', name: 'jQuery Datatables plugin', testObject: $.fn.dataTable },
+			{ key: 'mapevents', name: 'jQuery Map Events plugin', testObject: $.mapEvents },
+			{ key: 'pubsub', name: 'jQuery Pub/Sub plugin', testObject: $.publish },
+			{ key: 'bootstrap', name: 'jQuery Bootstrap plugin', testObject: $.fn.modal },
+			{ key: 'foreach', name: 'Array forEach polyfill', testObject: Array.prototype.forEach },
+			{ key: 'isArray', name: 'Array.isArray polyfill', testObject: Array.isArray }
 		];
 
 		// Perform checks
 		var missingDependencies = [];
+		var dependencyResults = {};
 
 		dependencyMap.forEach( function(element, index, array){
+			var hasDependency = true;
+
 			if ( typeof element.testObject === 'undefined' ) {
-				missingDependencies.push( element.name );
+				missingDependencies.push( '-- ' + element.name );
+				hasDependency = false;
 			}
+
+			dependencyResults[element.key] = hasDependency;
+
 		});
 
 		if ( missingDependencies.length ) {
-			alert( 'The following dependencies is missing in ' + fileName + ': \r\n' + missingDependencies.join('\n') );
+			var message = 'The following dependencies are missing in ' + fileName + ': \r\n' + missingDependencies.join('\n');
+			(suppressAlert) ? console.log(message) : alert(message) ;
 		}
+
+		return dependencyResults;
 	}
 
 	warmup.common = {
 		init: function() {
 
-			checkDependencies();
+			var dependencyResults = checkDependencies( /* suppressAlert */ true);
 
-			warmup.common.setupDataTableDefaults(); // OMIT FOR TESTING..
+			if (dependencyResults.datatables === true) {
+				warmup.common.setupDataTableDefaults(); // OMIT FOR TESTING..
+			}
 
 			$.ajaxSetup({
 				cache: false
@@ -110,6 +124,12 @@ var warmup = {};
 		initAutocomplete: function ( el, options ) {
 			var elements = (el) ? $(el) : $('[data-autocomplete-source]');
 
+			function showFailedAjax(target, query, source){
+				target.val( "Error: Bad Autocomplete Response" );
+				target.closest('.control-group').addClass('error');
+				console.log("Bad Autocomplete Response ::: Autocomplete reponse is expected to be a JSON Array: [" + source + '?term=' + query + "]", fileName);
+			}
+
 			elements.each( function(i,e) {
 				var target = $(e);
 				var source = target.data("autocomplete-source");
@@ -125,16 +145,21 @@ var warmup = {};
 				var relatedEl = (relatedId) ? $('#' + relatedId) : $('input[name="'+ relatedName +'"]');
 				var minLength = target.data( "autocomplete-min-length" ) || 5;
 
+				// Might cause issues.. Look into not initializing already initialized elements.
+				// IDEA: check for el.data('autocomplete');
+				// var origPlaceholder = target.attr('placeholder');
+				// target.attr('placeholder', origPlaceholder + ' (Min length: ' + minLength + ')');
+
 				var autocompleteOtions = $.extend( options, {
 					source: function(query, callback){
 						$.get(source + '?term=' + query, function( data, status, xhr, dataType ){
 							if (Array.isArray(data)) {
 								callback(data);
 							} else {
-								target.val( "Error: Bad Autocomplete Response" );
-								target.closest('.control-group').addClass('error');
-								console.log("Bad Autocomplete Response ::: Autocomplete reponse is expected to be a JSON Array: [" + source + '?term=' + query + "]", fileName);
+								showFailedAjax(target, query, source);
 							}
+						}).error(function(){
+							showFailedAjax(target, query, source);
 						});
 					},
 					minLength: minLength,

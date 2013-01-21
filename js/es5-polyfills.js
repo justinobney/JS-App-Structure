@@ -11,3 +11,5 @@ if(!Array.isArray) {
     return Object.prototype.toString.call(vArg) === "[object Array]";
   };
 }
+
+// Do I want String.format in here???
