@@ -65,153 +65,54 @@
           <div class="well sidebar-nav">
             <ul class="nav nav-list">
               <li class="nav-header">Sidebar</li>
-              <li class="active"><a href="#">Link</a></li>
-              <li><a href="#">Link</a></li>
-              <li><a href="#">Link</a></li>
-              <li><a href="#">Link</a></li>
-              <li class="nav-header">Sidebar</li>
-              <li><a href="#">Link</a></li>
-              <li><a href="#">Link</a></li>
-              <li><a href="#">Link</a></li>
-              <li><a href="#">Link</a></li>
-              <li><a href="#">Link</a></li>
-              <li><a href="#">Link</a></li>
-              <li class="nav-header">Sidebar</li>
-              <li><a href="#">Link</a></li>
-              <li><a href="#">Link</a></li>
-              <li><a href="#">Link</a></li>
+              <li class="active"><a href="#">Init</a></li>
+              <li><a href="#">Autocomplete</a></li>
+              <li><a href="#">setupDataTableDefaults</a></li>
+              <li><a href="#">getTableData</a></li>
+              <li><a href="#">bindEventListeners</a></li>
+              <li><a href="#">initBootstrapHelpers</a></li>
             </ul>
           </div><!--/.well -->
         </div><!--/span-->
         <div class="span9">
-          <!-- Modal
-          ================================================== -->
+
           <section id="modals">
             <div class="page-header">
-              <h1>Autocomplete</h1>
+              <h1>Init</h1>
             </div>
 
+  <pre class="prettyprint linenums">  
+  var dependencyResults = checkDependencies( /* suppressAlert */ true);
 
-            <h2>Examples</h2>
-            <ol>
-              <li>
-                <p><strong class="text-success">WORKS</strong> Well deined tag with all required attributes & a working source (assuming mokjax setup in this demo).</p>
-              </li>
-              <li>
-                <p><strong class="text-error">Request Fails</strong> Has REQUIRED attributes. Fails on request</p>
-              </li>
-              <li>
-                <p><strong class="text-error">Missing Required Attribues</strong> - Fails on initialization.</p>
-              </li>
-            </ol>
+  if (dependencyResults.datatables === true) {
+    warmup.common.setupDataTableDefaults(); // OMIT FOR TESTING..
+  }
 
-            <h3>Static example</h3>
-            <div class="bs-docs-example" style="background-color: #f5f5f5;">
-              <h4>Autocomplete</h4>
-              <div class="control-group">
-                <label>Good :: Autocomplete</label>
-                <div class="controls">
-                  <input type="text" class="span3" placeholder="Type anything.." data-provide="typeahead" data-autocomplete-source="/ajax/autocomplete" data-autocomplete-related-id="hidTypeAheadVal">
-                  <input type="hidden" name="hidTypeAheadVal" id="hidTypeAheadVal">
-                </div>
-              </div>
+  $.ajaxSetup({
+    cache: false
+  });
 
-              <div class="control-group">
-                <label>Bad :: Source Response</label>
-                <div class="controls">
-                  <input type="text" class="span3" placeholder="This won't work..." id="badHref" data-provide="typeahead" data-autocomplete-source="#rawr" data-autocomplete-related-id="hidTypeAheadVal">
-                </div>
-              </div>
-
-              <div class="control-group">
-                <label>Bad :: Missing Required Attributes</label>
-                <div class="controls">
-                <input type="text" class="span3" placeholder="This won't work..." id="badHref" data-provide="typeahead" data-autocomplete-source="#rawr">
-                </div>
-              </div>
-            </div>
-  <pre class="prettyprint linenums">
-  &lt;div class=&quot;control-group&quot;&gt;
-    &lt;label&gt;Good :: Autocomplete&lt;/label&gt;
-    &lt;div class=&quot;controls&quot;&gt;
-      &lt;input type=&quot;text&quot; class=&quot;span3&quot; placeholder=&quot;Data Attribute Autocomplete&quot; 
-        data-provide=&quot;typeahead&quot; data-autocomplete-source=&quot;/ajax/autocomplete&quot; 
-        data-autocomplete-related-id=&quot;hidTypeAheadVal&quot;&gt;
-      &lt;input type=&quot;hidden&quot; name=&quot;hidTypeAheadVal&quot; id=&quot;hidTypeAheadVal&quot;&gt;
-    &lt;/div&gt;
-  &lt;/div&gt;
+  warmup.common.bindEventListeners();
+  warmup.common.initBootstrapHelpers();
   </pre>
 
-            <h3>Live demo</h3>
-            <p>Toggle a modal via JavaScript by clicking the button below. It will slide down and fade in from the top of the page.</p>
-            <!-- sample modal content -->
-            <div id="myModal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-              <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                <h3 id="myModalLabel">Modal Heading</h3>
-              </div>
-              <div class="modal-body">
-                <h4>Text in a modal</h4>
-                <p>Duis mollis, est non commodo luctus, nisi erat porttitor ligula, eget lacinia odio sem.</p>
-
-                <h4>Popover in a modal</h4>
-                <p>This <a href="#" role="button" class="btn popover-test" title="A Title" data-content="And here's some amazing content. It's very engaging. right?">button</a> should trigger a popover on click.</p>
-
-                <h4>Tooltips in a modal</h4>
-                <p><a href="#" class="tooltip-test" title="Tooltip">This link</a> and <a href="#" class="tooltip-test" title="Tooltip">that link</a> should have tooltips on hover.</p>
-
-                <hr>
-
-                <h4>Overflowing text to show optional scrollbar</h4>
-                <p>We set a fixed <code>max-height</code> on the <code>.modal-body</code>. Watch it overflow with all this extra lorem ipsum text we've included.</p>
-                <p>Cras mattis consectetur purus sit amet fermentum. Cras justo odio, dapibus ac facilisis in, egestas eget quam. Morbi leo risus, porta ac consectetur ac, vestibulum at eros.</p>
-                <p>Praesent commodo cursus magna, vel scelerisque nisl consectetur et. Vivamus sagittis lacus vel augue laoreet rutrum faucibus dolor auctor.</p>
-                <p>Aenean lacinia bibendum nulla sed consectetur. Praesent commodo cursus magna, vel scelerisque nisl consectetur et. Donec sed odio dui. Donec ullamcorper nulla non metus auctor fringilla.</p>
-                <p>Cras mattis consectetur purus sit amet fermentum. Cras justo odio, dapibus ac facilisis in, egestas eget quam. Morbi leo risus, porta ac consectetur ac, vestibulum at eros.</p>
-                <p>Praesent commodo cursus magna, vel scelerisque nisl consectetur et. Vivamus sagittis lacus vel augue laoreet rutrum faucibus dolor auctor.</p>
-                <p>Aenean lacinia bibendum nulla sed consectetur. Praesent commodo cursus magna, vel scelerisque nisl consectetur et. Donec sed odio dui. Donec ullamcorper nulla non metus auctor fringilla.</p>
-              </div>
-              <div class="modal-footer">
-                <button class="btn" data-dismiss="modal">Close</button>
-                <button class="btn btn-primary">Save changes</button>
-              </div>
-            </div>
-            <div class="bs-docs-example" style="padding-bottom: 24px;">
-              <a data-toggle="modal" href="#myModal" class="btn btn-primary btn-large">Launch demo modal</a>
-            </div>
-  <pre class="prettyprint linenums">
-  &lt!-- Button to trigger modal --&gt;
-  &lt;a href="#myModal" role="button" class="btn" data-toggle="modal"&gt;Launch demo modal&lt;/a&gt;
-
-  &lt!-- Modal --&gt;
-  &lt;div id="myModal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true"&gt;
-    &lt;div class="modal-header"&gt;
-      &lt;button type="button" class="close" data-dismiss="modal" aria-hidden="true"&gt;&times;&lt;/button&gt;
-      &lt;h3 id="myModalLabel"&gt;Modal header&lt;/h3&gt;
-    &lt;/div&gt;
-    &lt;div class="modal-body"&gt;
-      &lt;p&gt;One fine body&hellip;&lt;/p&gt;
-    &lt;/div&gt;
-    &lt;div class="modal-footer"&gt;
-      &lt;button class="btn" data-dismiss="modal" aria-hidden="true"&gt;Close&lt;/button&gt;
-      &lt;button class="btn btn-primary"&gt;Save changes&lt;/button&gt;
-    &lt;/div&gt;
-  &lt;/div&gt;
-  </pre>
+            
 
 
-            <hr class="bs-docs-separator">
+            <h2>Responsibilities</h2>
 
-
-            <h2>Usage</h2>
-
-            <h3>Via data attributes</h3>
-            <p>Activate a modal without writing JavaScript. Set <code>data-toggle="modal"</code> on a controller element, like a button, along with a <code>data-target="#foo"</code> or <code>href="#foo"</code> to target a specific modal to toggle.</p>
-            <pre class="prettyprint linenums">&lt;button type="button" data-toggle="modal" data-target="#myModal"&gt;Launch modal&lt;/button&gt;</pre>
-
-            <h3>Via JavaScript</h3>
-            <p>Call a modal with id <code>myModal</code> with a single line of JavaScript:</p>
-            <pre class="prettyprint linenums">$('#myModal').modal(options)</pre>
+            <h3>Check for common dependencies</h3>
+            <p>Returns an dependencyResults object <code>{dependencyName: hasDependency} // ex: { datatables: true }</code> that can be used for initializing code.</p>
+            <pre class="prettyprint linenums">
+    var dependencyMap = [
+      { key: 'datatables', name: 'jQuery Datatables plugin', testObject: $.fn.dataTable },
+      { key: 'mapevents', name: 'jQuery Map Events plugin', testObject: $.mapEvents },
+      { key: 'pubsub', name: 'jQuery Pub/Sub plugin', testObject: $.publish },
+      { key: 'bootstrap', name: 'jQuery Bootstrap plugin', testObject: $.fn.modal },
+      { key: 'foreach', name: 'Array forEach polyfill', testObject: Array.prototype.forEach },
+      { key: 'isArray', name: 'Array.isArray polyfill', testObject: Array.isArray }
+    ];              
+            </pre>
 
             <h3>Options</h3>
             <p>Options can be passed via data attributes or JavaScript. For data attributes, append the option name to <code>data-</code>, as in <code>data-backdrop=""</code>.</p>
@@ -249,6 +150,100 @@
                  <td>false</td>
                  <td><p>If a remote url is provided, content will be loaded via jQuery's <code>load</code> method and injected into the <code>.modal-body</code>. If you're using the data api, you may alternatively use the <code>href</code> tag to specify the remote source. An example of this is shown below:</p>
                 <pre class="prettyprint linenums"><code>&lt;a data-toggle="modal" href="remote.html" data-target="#modal"&gt;click me&lt;/a&gt;</code></pre></td>
+               </tr>
+              </tbody>
+            </table>
+          </section>
+          <!-- Modal
+          ================================================== -->
+          <section id="modals">
+            <div class="page-header">
+              <h1>Autocomplete</h1>
+            </div>
+            <div class="row-fluid">
+              <div class="span8">
+                <h2>Markup</h2>
+<pre class="prettyprint linenums">
+  &lt;div class=&quot;control-group&quot;&gt;
+    &lt;label&gt;Good :: Autocomplete&lt;/label&gt;
+    &lt;div class=&quot;controls&quot;&gt;
+      &lt;input type=&quot;text&quot; placeholder=&quot;Data Attribute Autocomplete&quot; 
+        data-provide=&quot;typeahead&quot; 
+        data-autocomplete-source=&quot;/ajax/autocomplete&quot; 
+        data-autocomplete-related-id=&quot;hidTypeAheadVal&quot;&gt;
+      &lt;input type=&quot;hidden&quot; name=&quot;hidTypeAheadVal&quot; id=&quot;hidTypeAheadVal&quot;&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;</pre>
+                <ol>
+                  <li>
+                    <p><strong class="text-success">WORKS</strong> Well deined tag with all required attributes & a working source (assuming mokjax setup in this demo).</p>
+                  </li>
+                  <li>
+                    <p><strong class="text-error">Request Fails</strong> Has REQUIRED attributes. Fails on request</p>
+                  </li>
+                  <li>
+                    <p><strong class="text-error">Missing Required Attribues</strong> - Fails on initialization.</p>
+                  </li>
+                </ol>     
+              </div>
+              <div class="span4">
+                <h2>Live example</h2>
+                <div class="bs-docs-example" style="background-color: #f5f5f5;">
+                  <h4>Autocomplete</h4>
+                  <div class="control-group">
+                    <label>Good :: Autocomplete</label>
+                    <div class="controls">
+                      <input type="text" placeholder="Type anything.." data-provide="typeahead" data-autocomplete-source="/ajax/autocomplete" data-autocomplete-related-id="hidTypeAheadVal">
+                      <input type="hidden" name="hidTypeAheadVal" id="hidTypeAheadVal">
+                    </div>
+                  </div>
+
+                  <div class="control-group">
+                    <label>Bad :: Source Response</label>
+                    <div class="controls">
+                      <input type="text" placeholder="This won't work..." id="badHref" data-provide="typeahead" data-autocomplete-source="#rawr" data-autocomplete-related-id="hidTypeAheadVal">
+                    </div>
+                  </div>
+
+                  <div class="control-group">
+                    <label>Bad :: Missing Required Attributes</label>
+                    <div class="controls">
+                    <input type="text" placeholder="This won't work..." id="badHref" data-provide="typeahead" data-autocomplete-source="#rawr">
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <h3>Needed Attributes</h3>
+            <table class="table table-bordered table-striped">
+              <thead>
+               <tr>
+                 <th style="width: 250px;">Name</th>
+                 <th style="width: 100px;">Value</th>
+                 <th>Description</th>
+               </tr>
+              </thead>
+              <tbody>
+               <tr>
+                 <td>data-provide</td>
+                 <td>"typeahead"</td>
+                 <td>Used to automatically initialize the bootstrap autocomplete.</td>
+               </tr>
+               <tr>
+                 <td>data-autocomplete-source</td>
+                 <td>URL</td>
+                 <td>Ex: <code>"/ajax/autocomplete"</code> \\ <code>?term=</code> will be appended with the value of the option</td>
+               </tr>
+               <tr>
+                 <td>data-autocomplete-related-id</td>
+                 <td>Element ID</td>
+                 <td>Element will have value replaced with value of selected item.</td>
+               </tr>
+               <tr>
+                 <td>data-autocomplete-related-name</td>
+                 <td>Element Name Attribure</td>
+                 <td>(Optional) if element ID is not available, name can be used.</td>
                </tr>
               </tbody>
             </table>
@@ -303,7 +298,7 @@
     // do something…
   })
   </pre>
-          </section>          
+          </section>
         </div><!--/span-->
       </div><!--/row-->
 
