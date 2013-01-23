@@ -6,7 +6,8 @@ warmup.common = (function(warmup, $, _, document){
 
 	var selectors = {
 		tooltip: '[data-js="tooltip"]',
-		dropdown: ''
+		dropdown: '',
+		defaultAjaxHandler = '[data-js-ajax="default"]'
 	};
 
 	// QUESTION: Should this go into the app.common itself or in a test.js file?
@@ -63,6 +64,10 @@ warmup.common = (function(warmup, $, _, document){
 
 		// Initialize dropdowns
 		$(selectors.dropdown).dropdown();
+
+		// QUESTION: Does this belong here???
+		// It will be used in the scenario that most forms in Modal Submit functions happen
+		$(document).on('submit', selectors.defaultAjaxHandler, _HandleDefaultAjaxPost);
 	}
 
 	function _BindEventListeners() {
@@ -87,6 +92,22 @@ warmup.common = (function(warmup, $, _, document){
 		$(document).ajaxSuccess( function() {
 			$.publish( 'ajax/newContentLoaded' );
 		});
+	}
+
+	function _HandleDefaultAjaxPost(){
+        var form = $(e.target);
+        var containerId = form.data('ajax-replace-container');
+        var fields = form.serializeArray();
+        var data = $.param(fields);
+
+        $.post(form.attr('action'), data, function (result) {
+            if (result.success == true) {
+                // redirect
+                window.location = result.url;
+            } else {
+                $('#' + containerId).empty().append(result);
+            }
+        });
 	}
 
 	function GetTableData( sSource, aoData, fnCallback ) {
