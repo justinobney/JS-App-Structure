@@ -40,6 +40,11 @@ var warmup = {};
 		return dependencyResults;
 	}
 
+	var selectors = {
+		tooltip: '[data-js="tooltip"]',
+		dropdown: ''
+	};
+
 	warmup.common = {
 		init: function() {
 
@@ -136,6 +141,7 @@ var warmup = {};
 
 				if ( typeof (source && (relatedId || relatedName)) === 'undefined' ) {
 					target.closest('.control-group').addClass('error');
+					target.attr('disabled',"disabled");
 					target.val( "Error: Missing Required Attributes" );
 					console.log( "Autocomplete incorrectly initialized :: Attributes Required: autocomplete-source AND ( autocomplete-related-id OR autocomplete-related-name )", fileName);
 				}
@@ -150,9 +156,10 @@ var warmup = {};
 
 				var autocompleteOtions = $.extend( options, {
 					source: function(query, callback){
-						$.get(source + '?term=' + query, function( data, status, xhr, dataType ){
-							if (Array.isArray(data)) {
-								callback(data);
+						$.get(source + '?term=' + query, function( response, status, xhr, dataType ){
+							var items = response.data || response;
+							if (Array.isArray(items)) {
+								callback(items);
 							} else {
 								showFailedAjax(target, query, source);
 							}
@@ -190,6 +197,10 @@ var warmup = {};
 
 			$.subscribe( 'ajax/newContentLoaded', function (event) {
 				warmup.common.initBootstrapHelpers();
+
+				// Hide open tooltips b/c deleting an item with an open tooltip
+				// keeps the tooltip open until the page is refreshed
+				$(selectors.tooltip).tooltip('hide');
 			});
 			
 			// Publish "newContentLoaded" after all successfull ajax calls..
@@ -203,10 +214,10 @@ var warmup = {};
 			warmup.common.initAutocomplete();
 
 			// Initialize all tooltips
-			$('[data-js="tooltip"]').tooltip();
+			$(selectors.tooltip).tooltip();
 
 			// Initialize dropdowns
-			$('[data-toggle="dropdown"]').dropdown();
+			$(selectors.dropdown).dropdown();
 		}
 	};
 })();

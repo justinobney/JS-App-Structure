@@ -12,7 +12,8 @@
 		<link rel="stylesheet" href="css/ninja.css">
 		<script src="js/es5-polyfills.js"></script>
 
-		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>		
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>	
+		<script src="js/underscore-min.js"></script>	
 		<script type="text/javascript" src="http://code.jquery.com/qunit/qunit-1.10.0.js"></script>
 		<link type="text/css" href="css/style.css" rel="stylesheet"></link>
 
@@ -39,15 +40,15 @@
 							<div class="control-group">
 							  <label>Good :: Autocomplete</label>
 							  <div class="controls">
-							    <input type="text" class="span3" placeholder="Data Attribute Autocomplete" data-provide="typeahead" data-autocomplete-source="/ajax/autocomplete" data-autocomplete-related-id="hidTypeAheadVal">
-							    <input type="hidden" name="hidTypeAheadVal" id="hidTypeAheadVal">
+								<input type="text" class="span3" placeholder="Data Attribute Autocomplete" data-provide="typeahead" data-autocomplete-source="/ajax/autocomplete" data-autocomplete-related-id="hidTypeAheadVal">
+								<input type="hidden" name="hidTypeAheadVal" id="hidTypeAheadVal">
 							  </div>
 							</div>
 
 							<div class="control-group">
 							  <label>Bad :: Source Response</label>
 							  <div class="controls">
-							    <input type="text" class="span3" placeholder="This won't work..." id="badHref" data-provide="typeahead" data-autocomplete-source="#rawr" data-autocomplete-related-id="hidTypeAheadVal">
+								<input type="text" class="span3" placeholder="This won't work..." id="badHref" data-provide="typeahead" data-autocomplete-source="#rawr" data-autocomplete-related-id="hidTypeAheadVal">
 							  </div>
 							</div>
 
@@ -125,7 +126,7 @@
 		<!-- =================================================== -->
 		<!--             App Code | System Under Test            -->
 		<!-- =================================================== -->
-		<script type="text/javascript" src="app.common.js"></script>
+		<script type="text/javascript" src="app.common.revealing.js"></script>
 		<!-- =================================================== -->
 		
 		<script type="text/javascript">
@@ -221,7 +222,7 @@
 				});
 
 				test( 'Bootstrap autocomplete throws error when missing required attributes', function() {
-  					// Insert bad html
+					// Insert bad html
 					// <input type="text" data-provide="typeahead" data-autocomplete-source="#rawr" data-autocomplete-related-id="hidTypeAheadVal">
 					var badAutocomplete = $( '<input />', {
 						'type': 'text',
@@ -261,10 +262,10 @@
 				// ajax/newContentLoaded fires..
 				asyncTest( 'Tooltips bound after late load with event: ajax/newContentLoaded', function() {
 					var tooltipMatchCount = $(tooltipSelector).length;
-				  	var hasTooltipElements = tooltipMatchCount > 0;
-				  	ok( hasTooltipElements, "Elements found with correct selector" );
+					var hasTooltipElements = tooltipMatchCount > 0;
+					ok( hasTooltipElements, "Elements found with correct selector" );
 
-				  	warmup.common.init();
+					warmup.common.init();
 
 					var tooltipHtml = $( '#test-tooltips', content ).find( '.btn-toolbar:first' ).html();
 
@@ -283,11 +284,16 @@
 				});
 
 				test('Autocomplete - Appends Min Length to placeholder', 1, function() {
-				  ok(false, 'fail');
+					ok(false, 'fail');
 				});
 
 				test('ajax/newContentLoaded does not try to initialize bootstrap elements alread initialized', 1, function() {
-				  ok(false, 'Use data attribute checking for plugin type...');
+					ok(false, 'Use data attribute checking for plugin type...');
+				});
+
+				test('ajax/newContentLoaded hides all tooltips', 1, function() {
+					// When an item is deleted via AJAX, if it had an open tooltip, the tooltip is visible.
+					ok(false, 'Hide the tooltips');
 				});
 
 			}
