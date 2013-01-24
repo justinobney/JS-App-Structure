@@ -17,9 +17,7 @@ warmup.common = (function(warmup, $, _, document){
 			{ key: 'datatables', name: 'jQuery Datatables plugin', testObject: $.fn.dataTable },
 			{ key: 'mapevents', name: 'jQuery Map Events plugin', testObject: $.mapEvents },
 			{ key: 'pubsub', name: 'jQuery Pub/Sub plugin', testObject: $.publish },
-			{ key: 'bootstrap', name: 'jQuery Bootstrap plugin', testObject: $.fn.modal },
-			{ key: 'foreach', name: 'Array forEach polyfill', testObject: Array.prototype.forEach },
-			{ key: 'isArray', name: 'Array.isArray polyfill', testObject: Array.isArray }
+			{ key: 'bootstrap', name: 'jQuery Bootstrap plugin', testObject: $.fn.modal }
 		];
 
 		// Perform checks
