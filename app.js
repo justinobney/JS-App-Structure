@@ -98,4 +98,4 @@ StandardApp.create = function(){
  * }
  *
  * appInstance.Init(config);
- *------------------------------/
+ *------------------------------*/
