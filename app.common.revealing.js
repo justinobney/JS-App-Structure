@@ -46,6 +46,10 @@ warmup.common = (function(warmup, $, _, document){
 		return dependencyResults;
 	}
 
+	function _IsSiteInDebugMode(){
+		return (parseInt(window.location.port) !== 80 || window.location.host.indexOf('localhost') > -1);
+	}
+
 	function _SetupDataTableDefaults() {
 		$.extend( $.fn.dataTable.defaults, {
 			"bJQueryUI": false,
@@ -92,6 +96,25 @@ warmup.common = (function(warmup, $, _, document){
 		$(document).ajaxSuccess( function() {
 			$.publish( 'ajax/newContentLoaded' );
 		});
+
+		$(document).ajaxError(function(event, xhr, status, error) {
+			_HandleAjaxError(xhr, status);
+		});
+	}
+
+	function _HandleAjaxError( xhr, status ){
+		
+		if( ! _IsSiteInDebugMode() ){
+			// TODO: Determine where to log this:
+			// -- Google Analytics
+			// -- Envoc service
+		}
+
+		console.log('\n -- AJAX ERROR @ ' + new Date() + ' --');
+	    console.log('Requested URL : ' + status.url);
+	    console.log('Origin Domain : ' + window.location.host);
+	    console.log('ExceptionType : ' + xhr.status);
+	    console.log('Error Message : ' + xhr.statusText);
 	}
 
 	function _HandleDefaultAjaxPost(){
