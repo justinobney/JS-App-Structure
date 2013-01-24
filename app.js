@@ -75,6 +75,8 @@ var StandardApp = function ( $, window, document, undefined ) {
     }
     // =========== END Observable Implimentation ================
 
+
+    // RETURN the functions & variables that need to be exposed.
     return {
         init: Init,
         settings: config
@@ -85,3 +87,15 @@ StandardApp.create = function(){
     var newApp = StandardApp( jQuery, window, document ); // Pass in dependancies();
     return newApp;
 };
+
+/* ---------------------------
+ * Example Use:
+ * ----------------------------
+ * var appInstance = StandardApp.create();
+ *
+ * var config = {
+ *   eventNamespace: 'SomeOtherNamespace'
+ * }
+ *
+ * appInstance.Init(config);
+ *------------------------------/
