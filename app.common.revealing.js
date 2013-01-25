@@ -7,7 +7,7 @@ warmup.common = (function(warmup, $, _, document){
 	var selectors = {
 		tooltip: '[data-js="tooltip"]',
 		dropdown: '',
-		defaultAjaxHandler = '[data-js-ajax="default"]'
+		defaultAjaxHandler: '[data-js-ajax="default"]'
 	};
 
 	// QUESTION: Should this go into the app.common itself or in a test.js file?
@@ -45,7 +45,7 @@ warmup.common = (function(warmup, $, _, document){
 	}
 
 	function _IsSiteInDebugMode(){
-		return (parseInt(window.location.port) !== 80 || window.location.host.indexOf('localhost') > -1);
+		return (parseInt(window.location.port, 10) !== 80 || window.location.host.indexOf('localhost') > -1);
 	}
 
 	function _SetupDataTableDefaults() {
@@ -62,10 +62,14 @@ warmup.common = (function(warmup, $, _, document){
 		InitAutocomplete();
 
 		// Initialize all tooltips
-		$(selectors.tooltip).tooltip();
+		$(selectors.tooltip).filter(function (i, e) {
+			return typeof $(e).data('tooltip') === 'undefined';
+		}).tooltip();
 
 		// Initialize dropdowns
-		$(selectors.dropdown).dropdown();
+		$(selectors.dropdown).filter(function (i, e) {
+			return typeof $(e).data('dropdown') === 'undefined';
+		}).dropdown();
 
 		// QUESTION: Does this belong here???
 		// It will be used in the scenario that most forms in Modal Submit functions happen
@@ -87,7 +91,7 @@ warmup.common = (function(warmup, $, _, document){
 
 			// Hide open tooltips b/c deleting an item with an open tooltip
 			// keeps the tooltip open until the page is refreshed
-			$(selectors.tooltip).tooltip('hide');
+			// $(selectors.tooltip).tooltip('hide');
 		});
 		
 		// Publish "newContentLoaded" after all successfull ajax calls..
@@ -109,26 +113,26 @@ warmup.common = (function(warmup, $, _, document){
 		}
 
 		console.log('\n -- AJAX ERROR @ ' + new Date() + ' --');
-	    console.log('Requested URL : ' + status.url);
-	    console.log('Origin Domain : ' + window.location.host);
-	    console.log('ExceptionType : ' + xhr.status);
-	    console.log('Error Message : ' + xhr.statusText);
+		console.log('Requested URL : ' + status.url);
+		console.log('Origin Domain : ' + window.location.host);
+		console.log('ExceptionType : ' + xhr.status);
+		console.log('Error Message : ' + xhr.statusText);
 	}
 
 	function _HandleDefaultAjaxPost(){
-        var form = $(e.target);
-        var containerId = form.data('ajax-replace-container');
-        var fields = form.serializeArray();
-        var data = $.param(fields);
+		var form = $(e.target);
+		var containerId = form.data('ajax-replace-container');
+		var fields = form.serializeArray();
+		var data = $.param(fields);
 
-        $.post(form.attr('action'), data, function (result) {
-            if (result.success == true) {
-                // redirect
-                window.location = result.url;
-            } else {
-                $('#' + containerId).empty().append(result);
-            }
-        });
+		$.post(form.attr('action'), data, function (result) {
+			if (result.success === true) {
+				// redirect
+				window.location = result.url;
+			} else {
+				$('#' + containerId).empty().append(result);
+			}
+		});
 	}
 
 	function GetTableData( sSource, aoData, fnCallback ) {
@@ -190,10 +194,12 @@ warmup.common = (function(warmup, $, _, document){
 		function showFailedAjax(target, query, source){
 			target.val( "Error: Bad Autocomplete Response" );
 			target.closest('.control-group').addClass('error');
-			console.log("Bad Autocomplete Response ::: Autocomplete reponse is expected to be a JSON Array: [" + source + '?term=' + query + "]", fileName);
+			//console.log("Bad Autocomplete Response ::: Autocomplete reponse is expected to be a JSON Array: [" + source + '?term=' + query + "]", fileName);
 		}
 
-		elements.each( function(i,e) {
+		elements.filter(function (i, e) {
+			return typeof $(e).data('autocomplete') === 'undefined';
+		}).each( function(i,e) {
 			var target = $(e);
 			var source = target.data("autocomplete-source");
 			var relatedId = target.data("autocomplete-related-id");
@@ -203,7 +209,7 @@ warmup.common = (function(warmup, $, _, document){
 				target.closest('.control-group').addClass('error');
 				target.attr('disabled',"disabled");
 				target.val( "Error: Missing Required Attributes" );
-				console.log( "Autocomplete incorrectly initialized :: Attributes Required: autocomplete-source AND ( autocomplete-related-id OR autocomplete-related-name )", fileName);
+				//console.log( "Autocomplete incorrectly initialized :: Attributes Required: autocomplete-source AND ( autocomplete-related-id OR autocomplete-related-name )", fileName);
 			}
 
 			var relatedEl = (relatedId) ? $('#' + relatedId) : $('input[name="'+ relatedName +'"]');
@@ -246,7 +252,6 @@ warmup.common = (function(warmup, $, _, document){
 	}
 
 	function Init() {
-
 		var dependencyResults = _CheckDependencies( /* suppressAlert */ true);
 
 		if (dependencyResults.datatables === true) {
