@@ -1,12 +1,12 @@
 var warmup = {};
 
-warmup.common = (function(warmup, $, _, document){
+warmup.common = (function(warmup, $, _, document){ // Passing in parent object, though not used anywhere yet..
 
 	var fileName = "warmup.common.js";
 
 	var selectors = {
 		tooltip: '[data-js="tooltip"]',
-		dropdown: '',
+		dropdown: '', // NEED TO STANDARDIZE
 		defaultAjaxHandler: '[data-js-ajax="default"]'
 	};
 
@@ -61,12 +61,12 @@ warmup.common = (function(warmup, $, _, document){
 		// Initialize all automatic autocomplete elements
 		InitAutocomplete();
 
-		// Initialize all tooltips
+		// Initialize all uninitialized tooltips
 		$(selectors.tooltip).filter(function (i, e) {
 			return typeof $(e).data('tooltip') === 'undefined';
 		}).tooltip();
 
-		// Initialize dropdowns
+		// Initialize all uninitialized dropdowns
 		$(selectors.dropdown).filter(function (i, e) {
 			return typeof $(e).data('dropdown') === 'undefined';
 		}).dropdown();
@@ -78,6 +78,8 @@ warmup.common = (function(warmup, $, _, document){
 
 	function _BindEventListeners() {
 		// ================= EVENT MAPPING ============
+		// From custon plugin ny Justin Obney
+		// Clean way to publish events when another event triggers
 		var eventMap = [
 			['shown', 'ajax/NewContentLoaded', '.modal']
 		];
@@ -91,9 +93,9 @@ warmup.common = (function(warmup, $, _, document){
 
 			// Hide open tooltips b/c deleting an item with an open tooltip
 			// keeps the tooltip open until the page is refreshed
-			// $(selectors.tooltip).tooltip('hide');
+			$(selectors.tooltip).tooltip('hide');
 		});
-		
+
 		// Publish "newContentLoaded" after all successfull ajax calls..
 		$(document).ajaxSuccess( function() {
 			$.publish( 'ajax/newContentLoaded' );
@@ -105,18 +107,24 @@ warmup.common = (function(warmup, $, _, document){
 	}
 
 	function _HandleAjaxError( xhr, status ){
-		
+
+		var requestUrl = status.url;
+		var domain = window.location.host;
+		var exceptionType = xhr.status;
+		var message = xhr.statusText;
+
 		if( ! _IsSiteInDebugMode() ){
 			// TODO: Determine where to log this:
 			// -- Google Analytics
+			TrackEvent( 'AJAX Error', domain + ' - ' + exceptionType, requestUrl, null );
 			// -- Envoc service
 		}
 
 		console.log('\n -- AJAX ERROR @ ' + new Date() + ' --');
-		console.log('Requested URL : ' + status.url);
-		console.log('Origin Domain : ' + window.location.host);
-		console.log('ExceptionType : ' + xhr.status);
-		console.log('Error Message : ' + xhr.statusText);
+		console.log('Requested URL : ' + requestUrl);
+		console.log('Origin Domain : ' + domain);
+		console.log('ExceptionType : ' + exceptionType);
+		console.log('Error Message : ' + message);
 	}
 
 	function _HandleDefaultAjaxPost(){
@@ -134,6 +142,21 @@ warmup.common = (function(warmup, $, _, document){
 			}
 		});
 	}
+
+	function TrackEvent( category, action, label, opt_value ) {
+
+    	if ( ! window._gaq ) {
+            // Determine logging strategy when Google Analytics not loaded..
+            var data = JSON.stringify({
+	                category: category,
+	                action: action,
+	                label: label
+	            });
+            return;
+        }
+
+        _gaq.push( ['_trackEvent', category, action, label, opt_value] );
+    };
 
 	function GetTableData( sSource, aoData, fnCallback ) {
 		var data = [];
@@ -270,7 +293,8 @@ warmup.common = (function(warmup, $, _, document){
 	return {
 		init: Init,
 		initAutocomplete: InitAutocomplete,
-		getTableData: GetTableData
+		getTableData: GetTableData,
+		trackEvent: TrackEvent
 	};
 })(warmup, jQuery, _, document);
 
