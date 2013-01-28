@@ -12,8 +12,8 @@
 		<link rel="stylesheet" href="css/ninja.css">
 		<script src="js/es5-polyfills.js"></script>
 
-		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>	
-		<script src="js/underscore-min.js"></script>	
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+		<script src="js/underscore-min.js"></script>
 		<script type="text/javascript" src="http://code.jquery.com/qunit/qunit-1.10.0.js"></script>
 		<link type="text/css" href="css/style.css" rel="stylesheet"></link>
 
@@ -58,7 +58,7 @@
 								<input type="text" class="span3" placeholder="This won't work..." id="badHref" data-provide="typeahead" data-autocomplete-source="#rawr">
 							  </div>
 							</div>
-							
+
 						</form>
 						<div class="span3" id="test-tooltips">
 							<h4>Tooltips</h4>
@@ -89,6 +89,24 @@
 							<h4>Loading Via AJAX</h4>
 							<div class="ajax-holder"></div>
 						</div>
+
+						<div class="span6">
+							<div class="well">
+								<table cellpadding="0" cellspacing="0" border="0" class="display" id="example" width="100%">
+									<thead>
+										<tr>
+											<th></th>
+											<th>Size</th>
+											<th>Standard M/U</th>
+											<th>Side A</th>
+											<th>Side B</th>
+										</tr>
+									</thead>
+									<tbody>
+									</tbody>
+								</table>
+							</div>
+						</div>
 					</div>
 				</div>
 
@@ -108,15 +126,16 @@
 		<!-- ========== Remove and see what happens! =========== -->
 		<script src="js/plugins.js"></script>
 		<script src="js/bootstrap.js"></script>
-		<script src="js/jquery.dataTables.min.js"></script>
+		<script src="js/jquery.dataTables.js"></script>
+		<script src="js/jquery.dataTables.bootstrap.js"></script>
 		<!-- ================================================== -->
 
-		
+
 
 
 		<!-- =================================================== -->
 		<!--                    Testing Helpers                  -->
-		<!-- =================================================== -->		
+		<!-- =================================================== -->
 		<script src="js/jquery.mockjax.js"></script>
 		<!-- =================================================== -->
 
@@ -128,7 +147,7 @@
 		<!-- =================================================== -->
 		<script type="text/javascript" src="app.common.revealing.js"></script>
 		<!-- =================================================== -->
-		
+
 		<script type="text/javascript">
 			var qfixture = $( "#qunit-fixture" );
 			var content = qfixture.html();
@@ -141,7 +160,7 @@
 				  response: function (settings) {
 					var term = settings.url.split('?term=')[1];
 					var resp = [];
-					
+
 					for (var i = 5; i >= 0; i--) {
 						resp.push(term + ' word: ' + i);
 					};
@@ -157,6 +176,32 @@
 					this.responseText = this.responseText = settings.data.text;
 				  }
 				});
+
+				$.mockjax({
+				  url: '/ajax/dataTables',
+				  dataType: 'json',
+				  response: function (settings) {
+					this.responseText = getDatatablesResponse();
+				  }
+				});
+
+				function  getDatatablesResponse(){
+					var datatables_resp = {
+					    "sEcho": 1,
+					    "iTotalRecords": 28,
+					    "iTotalDisplayRecords": 10,
+					    "aaData": [
+					        [1, "1.5x1.5", 0.30, 1.50, 1.50],
+					        [2, "1.5x10", 0.50, 1.50, 10.00],
+					        [3, "1.5x11", 0.50, 1.50, 11.00],
+					        [4, "1.5x12", 0.50, 1.50, 12.00],
+					        [5, "1.5x13", 0.50, 1.50, 13.00]
+					    ],
+					    "sColumns": "Id,Size,StandardMarkUp,SideA,SideB"
+					};
+
+					return datatables_resp;
+				}
 			}
 
 
@@ -178,6 +223,24 @@
 				$.post('/ajax/echo', { text: tooltipHtml }, function(response){
 					qfixture.find('#test-tooltips .ajax-holder').append( response );
 				});
+
+				$('#example').dataTable( {
+	                aaSorting: [[1, "asc"]],
+	                bServerSide: true,
+	                bDestroy: true,
+	                sAjaxSource: '/ajax/dataTables',
+	                fnRowCallback: function (nRow, aData, iDisplayIndex) {
+	                    //$('td:eq(0)', nRow).html('<span class="table-actions">' + schematics.topcost.editLink.replace("idPlaceholder", aData[0]) + schematics.topcost.deleteLink.replace("idPlaceholder", aData[0]) + '</span>');
+	                },
+	                aoColumns:
+	                [
+	                    { "bSortable": false },
+	                    { sType: "string", sClass: "dtAlignLeft" },
+	                    { sType: "numeric", sClass: "dtAlignRight" },
+	                    { sType: "numeric", sClass: "dtAlignRight" },
+	                    { sType: "numeric", sClass: "dtAlignRight" }
+	                ]
+	            } );
 			});
 
 			function runTests(){
@@ -188,7 +251,7 @@
 				module( "General Tests", {
 					setup: function() {
 						// nothing to see yet
-					}, 
+					},
 					teardown: function() {
 						// nothing to see yet
 					}
@@ -237,7 +300,7 @@
 
 					// init the autocomplete
 					warmup.common.initAutocomplete( badAutocomplete );
-					
+
 					var hasError = badAutocomplete.closest('.control-group').hasClass('error');
 					ok( hasError, 'Bad autocomplete added error class to element' );
 				});
@@ -286,6 +349,39 @@
 				test('ajax/newContentLoaded does not try to initialize bootstrap elements already initialized', 1, function() {
 					ok( true, "I don't know how to test this, but somehow I know it works.. lol" );
 				});
+
+				module('Datatables Tests', {
+				  setup: function() {
+				    // setup for Datatables Tests
+				  },
+				  teardown: function() {
+				    //teardown for Datatables Tests
+				  }
+				});
+
+				test('Autofilter', 1, function() {
+					warmup.common.init();
+
+					$('#example').dataTable( {
+		                aaSorting: [[1, "asc"]],
+		                bServerSide: true,
+		                bDestroy: true,
+		                sAjaxSource: '/ajax/dataTables',
+		                fnRowCallback: function (nRow, aData, iDisplayIndex) {
+		                    //$('td:eq(0)', nRow).html('<span class="table-actions">' + schematics.topcost.editLink.replace("idPlaceholder", aData[0]) + schematics.topcost.deleteLink.replace("idPlaceholder", aData[0]) + '</span>');
+		                },
+		                aoColumns:
+		                [
+		                    { "bSortable": false },
+		                    { sType: "string", sClass: "dtAlignLeft" },
+		                    { sType: "numeric", sClass: "dtAlignRight" },
+		                    { sType: "numeric", sClass: "dtAlignRight" },
+		                    { sType: "numeric", sClass: "dtAlignRight" }
+		                ]
+		            } );
+					ok(false, 'Set up test for automatically filtering the datatable base off another control.');
+				});
+
 
 			}
 
