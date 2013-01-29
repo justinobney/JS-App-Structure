@@ -108,6 +108,15 @@
 							</div>
 						</div>
 					</div>
+					<div class="row hide">
+						<div class="span12" id="defaultAjaxPost">
+							<form action="/ajax/result/echo" data-action="create-person" data-ajax-replace-container="defaultAjaxPost" data-js-ajax="default">
+								<input type="text" name="item1">
+								<input type="text" name="item2">
+								<input type="text" name="item3">
+							</form>
+						</div>
+					</div>
 				</div>
 
 				<ol id="qunit-tests"></ol>
@@ -173,7 +182,18 @@
 				  url: '/ajax/echo',
 				  dataType: 'json',
 				  response: function (settings) {
-					this.responseText = this.responseText = settings.data.text;
+					this.responseText = settings.data.text;
+				  }
+				});
+
+				$.mockjax({
+				  url: '/ajax/result/echo',
+				  dataType: 'json',
+				  response: function (settings) {
+					this.responseText = {
+						success: true,
+						data: settings.data
+					};
 				  }
 				});
 
@@ -215,33 +235,33 @@
 
 			});
 
-			QUnit.done( function(){
-				warmup.common.init();
+			// QUnit.done( function(){
+			// 	warmup.common.init();
 
-				var tooltipHtml = $( '#test-tooltips', content ).find( '.btn-toolbar:first' ).html();
+			// 	var tooltipHtml = $( '#test-tooltips', content ).find( '.btn-toolbar:first' ).html();
 
-				$.post('/ajax/echo', { text: tooltipHtml }, function(response){
-					qfixture.find('#test-tooltips .ajax-holder').append( response );
-				});
+			// 	$.post('/ajax/echo', { text: tooltipHtml }, function(response){
+			// 		qfixture.find('#test-tooltips .ajax-holder').append( response );
+			// 	});
 
-				$('#example').dataTable( {
-	                aaSorting: [[1, "asc"]],
-	                bServerSide: true,
-	                bDestroy: true,
-	                sAjaxSource: '/ajax/dataTables',
-	                fnRowCallback: function (nRow, aData, iDisplayIndex) {
-	                    //$('td:eq(0)', nRow).html('<span class="table-actions">' + schematics.topcost.editLink.replace("idPlaceholder", aData[0]) + schematics.topcost.deleteLink.replace("idPlaceholder", aData[0]) + '</span>');
-	                },
-	                aoColumns:
-	                [
-	                    { "bSortable": false },
-	                    { sType: "string", sClass: "dtAlignLeft" },
-	                    { sType: "numeric", sClass: "dtAlignRight" },
-	                    { sType: "numeric", sClass: "dtAlignRight" },
-	                    { sType: "numeric", sClass: "dtAlignRight" }
-	                ]
-	            } );
-			});
+			// 	$('#example').dataTable( {
+	  //               aaSorting: [[1, "asc"]],
+	  //               bServerSide: true,
+	  //               bDestroy: true,
+	  //               sAjaxSource: '/ajax/dataTables',
+	  //               fnRowCallback: function (nRow, aData, iDisplayIndex) {
+	  //                   //$('td:eq(0)', nRow).html('<span class="table-actions">' + schematics.topcost.editLink.replace("idPlaceholder", aData[0]) + schematics.topcost.deleteLink.replace("idPlaceholder", aData[0]) + '</span>');
+	  //               },
+	  //               aoColumns:
+	  //               [
+	  //                   { "bSortable": false },
+	  //                   { sType: "string", sClass: "dtAlignLeft" },
+	  //                   { sType: "numeric", sClass: "dtAlignRight" },
+	  //                   { sType: "numeric", sClass: "dtAlignRight" },
+	  //                   { sType: "numeric", sClass: "dtAlignRight" }
+	  //               ]
+	  //           } );
+			// });
 
 			function runTests(){
 
@@ -254,6 +274,8 @@
 					},
 					teardown: function() {
 						// nothing to see yet
+						$.unsubscribe( 'ajax/newContentLoaded' );
+						$(document).off('submit');
 					}
 				});
 
@@ -353,9 +375,13 @@
 				module('Datatables Tests', {
 				  setup: function() {
 				    // setup for Datatables Tests
+				    $.unsubscribe( 'ajax/newContentLoaded' );
+					$(document).off('submit');
 				  },
 				  teardown: function() {
 				    //teardown for Datatables Tests
+				    $.unsubscribe( 'ajax/newContentLoaded' );
+					$(document).off('submit');
 				  }
 				});
 
@@ -382,6 +408,35 @@
 					ok(false, 'Set up test for automatically filtering the datatable base off another control.');
 				});
 
+				module('AJAX Handlers', {
+				  setup: function() {
+				    // setup for AJAX Handlers
+				    $.unsubscribe( 'ajax/newContentLoaded' );
+					$(document).off('submit');
+				  },
+				  teardown: function() {
+				    //teardown for AJAX Handlers
+				    $.unsubscribe( 'ajax/newContentLoaded' );
+					$(document).off('submit');
+				  }
+				});
+
+				asyncTest( 'Can register default ajax handlers', 1, function() {
+				  warmup.common.init();
+
+				  var el = $('[data-action="create-person"]');
+
+				  function myHandler(response){
+				  	console.log( response );
+				  	ok( true, 'The registered handler was fired' );
+				  }
+
+				  warmup.common.registerDefaultAjaxHandler( el, myHandler );
+
+				  el.trigger( 'submit' );
+
+				  setTimeout( start, 2000 ); // Start the test if nothing has passed in 3 seconds
+				});
 
 			}
 

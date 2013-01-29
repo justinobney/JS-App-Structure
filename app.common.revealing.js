@@ -10,6 +10,8 @@ warmup.common = (function(warmup, $, _, document){ // Passing in parent object, 
 		defaultAjaxHandler: '[data-js-ajax="default"]'
 	};
 
+	var defaultAjaxHandlers = {};
+
 	// QUESTION: Should this go into the app.common itself or in a test.js file?
 	function _CheckDependencies(suppressAlert){
 
@@ -70,10 +72,6 @@ warmup.common = (function(warmup, $, _, document){ // Passing in parent object, 
 		$(selectors.dropdown).filter(function (i, e) {
 			return typeof $(e).data('dropdown') === 'undefined';
 		}).dropdown();
-
-		// QUESTION: Does this belong here???
-		// It will be used in the scenario that most forms in Modal Submit functions happen
-		$(document).on('submit', selectors.defaultAjaxHandler, _HandleDefaultAjaxPost);
 	}
 
 	function _BindEventListeners() {
@@ -104,6 +102,9 @@ warmup.common = (function(warmup, $, _, document){ // Passing in parent object, 
 		$(document).ajaxError(function(event, xhr, status, error) {
 			_HandleAjaxError(xhr, status);
 		});
+
+		// It will be used in the scenario that most forms in Modal Submit functions happen
+		$(document).on('submit', selectors.defaultAjaxHandler, _HandleDefaultAjaxPost);
 	}
 
 	function _HandleAjaxError( xhr, status ){
@@ -127,21 +128,38 @@ warmup.common = (function(warmup, $, _, document){ // Passing in parent object, 
 		console.log('Error Message : ' + message);
 	}
 
-	function _HandleDefaultAjaxPost(){
-		var form = $(e.target);
-		var containerId = form.data('ajax-replace-container');
+	function _HandleDefaultAjaxPost(e){
+		e.preventDefault();
+		var form = $( e.target );
+		console.log( 'SUBMIT Caught: ', form);
+		var containerId = form.data( 'ajax-replace-container' );
 		var fields = form.serializeArray();
-		var data = $.param(fields);
+		var data = $.param( fields );
 
 		$.post(form.attr('action'), data, function (result) {
-			if (result.success === true) {
-				// redirect
-				window.location = result.url;
+			if ( result.success === true ) {
+				// Check for handlers..
+				if ( form.data('action') && defaultAjaxHandlers[ form.data('action') ] ) {
+				    defaultAjaxHandlers[ form.data('action') ]( result );
+				} else if ( result.url ) {
+				// OR redirect if result.url is available
+				    window.location  = result.url;
+				} else {
+				// OR alert success if no handler found
+				alert( 'unhandled default ajax post' );
+				}
+
 			} else {
 				$('#' + containerId).empty().append(result);
 			}
 		});
 	}
+
+	function RegisterDefaultAjaxHandler( form, ajaxHandler ){
+		var key = form.data('action');
+		defaultAjaxHandlers[key] = ajaxHandler;
+		console.log(defaultAjaxHandlers);
+	};
 
 	function TrackEvent( category, action, label, opt_value ) {
 
@@ -294,7 +312,8 @@ warmup.common = (function(warmup, $, _, document){ // Passing in parent object, 
 		init: Init,
 		initAutocomplete: InitAutocomplete,
 		getTableData: GetTableData,
-		trackEvent: TrackEvent
+		trackEvent: TrackEvent,
+		registerDefaultAjaxHandler: RegisterDefaultAjaxHandler
 	};
 })(warmup, jQuery, _, document);
 
