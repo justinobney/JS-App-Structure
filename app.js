@@ -4,7 +4,7 @@
  *  Author: Justin Obney - http://resume.justinobney.com
  *  License: Creative Commons? IDK.. I dont care..
  */
- 
+
  // MODULE STRUCTURE
 var StandardApp = function ( $, window, document, undefined ) {
     var appName = "StandardApp";
@@ -52,7 +52,7 @@ var StandardApp = function ( $, window, document, undefined ) {
     // Use internal Pub/Sub to be able to swap out implimentation
     // ---------------------------------------------------------
     function _BindListeners(){
-        // _Subscribe('myHandler', function() {
+        // _Subscribe('someEventName', function() {
         //     alert('My handeler was invoked:');
         // });
     }
@@ -83,6 +83,8 @@ var StandardApp = function ( $, window, document, undefined ) {
     };
 }
 
+// By attaching a create method to the function and forcing a closue
+// I am further making sure my private variables don't get contaminated
 StandardApp.create = function(){
     var newApp = StandardApp( jQuery, window, document ); // Pass in dependancies();
     return newApp;
