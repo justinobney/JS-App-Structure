@@ -7,7 +7,8 @@ warmup.common = (function(warmup, $, _, document){ // Passing in parent object, 
 	var selectors = {
 		tooltip: '[data-js="tooltip"]',
 		dropdown: '', // NEED TO STANDARDIZE
-		defaultAjaxHandler: '[data-js-ajax="default"]'
+		defaultAjaxHandler: '[data-js-ajax="default"]',
+		datepicker: '[data-widget*="datepicker"]'
 	};
 
 	var defaultAjaxHandlers = {};
@@ -19,7 +20,8 @@ warmup.common = (function(warmup, $, _, document){ // Passing in parent object, 
 			{ key: 'datatables', name: 'jQuery Datatables plugin', testObject: $.fn.dataTable },
 			{ key: 'mapevents', name: 'jQuery Map Events plugin', testObject: $.mapEvents },
 			{ key: 'pubsub', name: 'jQuery Pub/Sub plugin', testObject: $.publish },
-			{ key: 'bootstrap', name: 'jQuery Bootstrap plugin', testObject: $.fn.modal }
+			{ key: 'bootstrap', name: 'jQuery Bootstrap plugin', testObject: $.fn.modal },
+			{ key: 'jqueryui', name: 'jQuery UI', testObject: $.ui }
 		];
 
 		// Perform checks
@@ -72,6 +74,10 @@ warmup.common = (function(warmup, $, _, document){ // Passing in parent object, 
 		$(selectors.dropdown).filter(function (i, e) {
 			return typeof $(e).data('dropdown') === 'undefined';
 		}).dropdown();
+	}
+
+	function _InitJqeuryUiHelpers() {
+		$(selectors.datepicker).datepicker();
 	}
 
 	function _BindEventListeners() {
@@ -159,7 +165,7 @@ warmup.common = (function(warmup, $, _, document){ // Passing in parent object, 
 		var key = form.data('action');
 		defaultAjaxHandlers[key] = ajaxHandler;
 		console.log(defaultAjaxHandlers);
-	};
+	}
 
 	function TrackEvent( category, action, label, opt_value ) {
 
@@ -174,7 +180,7 @@ warmup.common = (function(warmup, $, _, document){ // Passing in parent object, 
         }
 
         _gaq.push( ['_trackEvent', category, action, label, opt_value] );
-    };
+    }
 
 	function GetTableData( sSource, aoData, fnCallback ) {
 		var data = [];
@@ -293,7 +299,7 @@ warmup.common = (function(warmup, $, _, document){ // Passing in parent object, 
 	}
 
 	function Init() {
-		var dependencyResults = _CheckDependencies( /* suppressAlert */ true);
+		var dependencyResults = _CheckDependencies( /* suppressAlert */ );
 
 		if (dependencyResults.datatables === true) {
 			_SetupDataTableDefaults(); // OMIT FOR TESTING..
@@ -305,6 +311,7 @@ warmup.common = (function(warmup, $, _, document){ // Passing in parent object, 
 
 		_BindEventListeners();
 		_InitBootstrapHelpers();
+		_InitJqeuryUiHelpers();
 	}
 
 

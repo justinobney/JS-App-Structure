@@ -16,6 +16,7 @@
 		<script src="js/underscore-min.js"></script>
 		<script type="text/javascript" src="http://code.jquery.com/qunit/qunit-1.10.0.js"></script>
 		<link type="text/css" href="css/style.css" rel="stylesheet"></link>
+		<link rel="stylesheet" href="http://code.jquery.com/ui/1.10.0/themes/base/jquery-ui.css" rel="stylesheet">
 
 		<!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
 		<!--[if lt IE 9]>
@@ -40,7 +41,11 @@
 							<div class="control-group">
 							  <label>Good :: Autocomplete</label>
 							  <div class="controls">
-								<input type="text" class="span3" placeholder="Data Attribute Autocomplete" data-provide="typeahead" data-autocomplete-source="/ajax/autocomplete" data-autocomplete-related-id="hidTypeAheadVal">
+								<input type="text" class="span3" placeholder="Data Attribute Autocomplete" 
+								data-provide="typeahead" 
+								data-autocomplete-source="/ajax/autocomplete" 
+								data-autocomplete-related-id="hidTypeAheadVal">
+								
 								<input type="hidden" name="hidTypeAheadVal" id="hidTypeAheadVal">
 							  </div>
 							</div>
@@ -90,7 +95,7 @@
 							<div class="ajax-holder"></div>
 						</div>
 
-						<div class="span6">
+						<div class="span3">
 							<div class="well">
 								<table cellpadding="0" cellspacing="0" border="0" class="display" id="example" width="100%">
 									<thead>
@@ -105,6 +110,14 @@
 									<tbody>
 									</tbody>
 								</table>
+							</div>
+						</div>
+						<div class="span3">
+							  <div class="control-group">
+							  <label>Datepicker</label>
+							  <div class="controls">
+								<input type="text" placeholder="Select a date" data-widget="datepicker">
+							  </div>
 							</div>
 						</div>
 					</div>
@@ -133,6 +146,7 @@
 
 		<!-- =============== Le dependencies ================== -->
 		<!-- ========== Remove and see what happens! =========== -->
+		<script type="text/javascript" src="http://code.jquery.com/ui/1.10.0/jquery-ui.js"></script>
 		<script src="js/plugins.js"></script>
 		<script src="js/bootstrap.js"></script>
 		<script src="js/jquery.dataTables.js"></script>
@@ -267,6 +281,7 @@
 
 				var tooltipSelector = '[data-js="tooltip"]';
 				var typeaheadSelector = '[data-autocomplete-source]';
+				var datapickerSelector = '[data-widget*="datepicker"]'
 
 				module( "General Tests", {
 					setup: function() {
@@ -436,6 +451,28 @@
 				  el.trigger( 'submit' );
 
 				  setTimeout( start, 2000 ); // Start the test if nothing has passed in 3 seconds
+				});
+
+				module('jQuery UI Tests', {
+				  setup: function() {
+				    // setup for jQuery UI Tests 
+				  },
+				  teardown: function() {
+				    //teardown for jQuery UI Tests
+				  }
+				});
+				
+				test('Automatically initialize datepickers', 2, function() {
+				  var targets = $(datapickerSelector);
+				  ok( (targets.length > 0), 'Targets to initialize found' );
+				  
+				  warmup.common.init();
+
+				  var datepickerInitialized = $('.hasDatepicker').filter(function(i,e){
+					return $(e).data('widget') == 'datepicker';
+				  });
+				  
+				  equal(targets.length, datepickerInitialized.length, 'Correct number of datepickers initialized');
 				});
 
 			}
