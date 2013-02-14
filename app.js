@@ -44,7 +44,6 @@ var StandardApp = function ( $, window, document, undefined ) {
 
     // Denote private functions with an underscore and Captialize Words
     function _PrivateHelper(){
-
         // This has access to all functions and variables defined in the app.
     }
 

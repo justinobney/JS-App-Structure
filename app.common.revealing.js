@@ -47,7 +47,7 @@ warmup.common = (function(warmup, $, _, document){ // Passing in parent object, 
 	}
 
 	function _IsSiteInDebugMode(){
-		return (parseInt(window.location.port, 10) !== 80 || window.location.host.indexOf('localhost') > -1);
+		return ( 80 !== parseInt(window.location.port, 10) || -1 !== window.location.host.indexOf('localhost') ); // window.location.host.indexOf('localhost') != -1 NOTE: Assignment Side Matters
 	}
 
 	function _SetupDataTableDefaults() {
@@ -137,7 +137,7 @@ warmup.common = (function(warmup, $, _, document){ // Passing in parent object, 
 		var data = $.param( fields );
 
 		$.post(form.attr('action'), data, function (result) {
-			if ( result.success === true ) {
+			if ( true === result.success ) {
 				// Check for handlers..
 				if ( form.data('action') && defaultAjaxHandlers[ form.data('action') ] ) {
 				    defaultAjaxHandlers[ form.data('action') ]( result );
@@ -180,13 +180,13 @@ warmup.common = (function(warmup, $, _, document){ // Passing in parent object, 
 		var data = [];
 
 		var columnCount = _.find(aoData, function(o) { return o.name == 'iColumns'; }).value;
-		var echo = _.find(aoData, function(o) { return o.name == 'sEcho'; }).value;
-		var skip = _.find(aoData, function(o) { return o.name == 'iDisplayStart'; }).value;
-		var take = _.find(aoData, function(o) { return o.name == 'iDisplayLength'; }).value;
-		var search = _.find(aoData, function(o) { return o.name == 'sSearch'; }).value;
-		var sortCols = _.filter(aoData, function(o) { return o.name.indexOf('iSortCol_') == 0; });
-		var sortDirs = _.filter(aoData, function(o) { return o.name.indexOf('sSortDir_') == 0; });
-		var searches = _.filter(aoData, function(o) { return o.name.indexOf('sSearch_') == 0; });
+		var echo = _.find(aoData, function(o) { return 'sEcho' == o.name; }).value;
+		var skip = _.find(aoData, function(o) { return 'iDisplayStart' == o.name; }).value;
+		var take = _.find(aoData, function(o) { return 'iDisplayLength' == o.name; }).value;
+		var search = _.find(aoData, function(o) { return 'sSearch' == o.name; }).value;
+		var sortCols = _.filter(aoData, function(o) { return 0 == o.name.indexOf('iSortCol_'); });
+		var sortDirs = _.filter(aoData, function(o) { return 0 == o.name.indexOf('sSortDir_'); });
+		var searches = _.filter(aoData, function(o) { return 0 == o.name.indexOf('sSearch_'); });
 		var custom = _.filter(aoData, function(o) { return o.custom; });
 
 		data.push({ "name": "TableEcho", "value": echo });
@@ -213,7 +213,7 @@ warmup.common = (function(warmup, $, _, document){ // Passing in parent object, 
 
 		for (var i = 0; i < columnCount; i++) {
 			var searchTerm = searches[i].value;
-			if (searchTerm == '') {
+			if ('' == searchTerm) {
 				continue;
 			}
 			data.push({ "name": "Columns[" + actual + "].ColumnIndex", "value": i });
@@ -239,14 +239,14 @@ warmup.common = (function(warmup, $, _, document){ // Passing in parent object, 
 		}
 
 		elements.filter(function (i, e) {
-			return typeof $(e).data('autocomplete') === 'undefined';
+			return 'undefined' === typeof $(e).data('autocomplete');
 		}).each( function(i,e) {
 			var target = $(e);
 			var source = target.data("autocomplete-source");
 			var relatedId = target.data("autocomplete-related-id");
 			var relatedName = target.data("autocomplete-related-name");
 
-			if ( typeof (source && (relatedId || relatedName)) === 'undefined' ) {
+			if (  'undefined' === typeof (source && (relatedId || relatedName)) ) {
 				target.closest('.control-group').addClass('error');
 				target.attr('disabled',"disabled");
 				target.val( "Error: Missing Required Attributes" );
@@ -295,7 +295,7 @@ warmup.common = (function(warmup, $, _, document){ // Passing in parent object, 
 	function Init() {
 		var dependencyResults = _CheckDependencies( /* suppressAlert */ true);
 
-		if (dependencyResults.datatables === true) {
+		if ( true === dependencyResults.datatables ) {
 			_SetupDataTableDefaults(); // OMIT FOR TESTING..
 		}
 
