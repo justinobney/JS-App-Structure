@@ -8,7 +8,7 @@ warmup.common = (function(warmup, $, _, document){ // Passing in parent object, 
 		tooltip: '[data-js="tooltip"]',
 		dropdown: '', // NEED TO STANDARDIZE
 		defaultAjaxHandler: '[data-js-ajax="default"]',
-		datepicker: '[data-widget*="datepicker"]'
+		datepicker: '[data-js-widget*="datepicker"]'
 	};
 
 	var defaultAjaxHandlers = {};
@@ -67,12 +67,12 @@ warmup.common = (function(warmup, $, _, document){ // Passing in parent object, 
 
 		// Initialize all uninitialized tooltips
 		$(selectors.tooltip).filter(function (i, e) {
-			return typeof $(e).data('tooltip') === 'undefined';
+			return 'undefined' === typeof $(e).data('tooltip');
 		}).tooltip();
 
 		// Initialize all uninitialized dropdowns
 		$(selectors.dropdown).filter(function (i, e) {
-			return typeof $(e).data('dropdown') === 'undefined';
+			return 'undefined' === typeof $(e).data('dropdown');
 		}).dropdown();
 	}
 
@@ -210,7 +210,7 @@ warmup.common = (function(warmup, $, _, document){ // Passing in parent object, 
 			data.push({ "name": "Columns[" + actual + "].ColumnIndex", "value": columnIndex });
 			data.push({ "name": "Columns[" + actual + "].SortDirection", "value": sortDir });
 
-			if (columnSearch != '') {
+			if ('' != columnSearch) {
 				data.push({ "name": "Columns[" + actual + "].SearchTerm", "value": columnSearch });
 			}
 
@@ -219,7 +219,7 @@ warmup.common = (function(warmup, $, _, document){ // Passing in parent object, 
 
 		for (var i = 0; i < columnCount; i++) {
 			var searchTerm = searches[i].value;
-			if ('' == searchTerm) {
+			if ('' === searchTerm) {
 				continue;
 			}
 			data.push({ "name": "Columns[" + actual + "].ColumnIndex", "value": i });
